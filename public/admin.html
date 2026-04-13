@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - গাঁও bala</title>
+  <style>
+    :root {
+      --gold: #c9a84c;
+      --gold-light: #e8c97a;
+      --black: #050505;
+      --surface: #111008;
+      --surface2: #1a1710;
+      --text: #e8dcc8;
+      --text-dim: #8a7d68;
+    }
+    body {
+      background: var(--black);
+      color: var(--text);
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 2rem;
+    }
+    h1, h2 {
+      color: var(--gold);
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+    .card {
+      background: var(--surface2);
+      border: 1px solid rgba(201, 168, 76, 0.2);
+      padding: 1.5rem;
+      border-radius: 8px;
+    }
+    .item {
+      background: var(--surface);
+      border: 1px solid rgba(201, 168, 76, 0.1);
+      padding: 1rem;
+      border-radius: 4px;
+      margin-bottom: 1rem;
+    }
+    .item h4 {
+      margin: 0 0 0.5rem 0;
+      color: var(--gold-light);
+    }
+    .item p {
+      margin: 0.2rem 0;
+      font-size: 0.9rem;
+      color: var(--text-dim);
+    }
+    .status {
+      display: inline-block;
+      padding: 0.2rem 0.5rem;
+      background: var(--gold);
+      color: var(--black);
+      font-size: 0.8rem;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+    hr {
+      border: 0;
+      border-top: 1px dashed rgba(201, 168, 76, 0.2);
+      margin: 1rem 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>গাঁও bala Admin Dashboard</h1>
+  <div class="grid">
+    <div class="card">
+      <h2>Recent Orders</h2>
+      <div id="orders-container">Loading...</div>
+    </div>
+    <div class="card">
+      <h2>Table Reservations</h2>
+      <div id="bookings-container">Loading...</div>
+    </div>
+  </div>
+
+  <script>
+    async function loadData() {
+      try {
+        const [ordersRes, bookingsRes] = await Promise.all([
+          fetch('/api/admin/orders'),
+          fetch('/api/admin/bookings')
+        ]);
+        const orders = await ordersRes.json();
+        const bookings = await bookingsRes.json();
+
+        const ordersContainer = document.getElementById('orders-container');
+        if (orders.length === 0) {
+          ordersContainer.innerHTML = '<p>No orders yet.</p>';
+        } else {
+          ordersContainer.innerHTML = orders.reverse().map(o => `
+            <div class="item">
+              <h4>Order #${o.id.slice(-6)} - <span class="status">${o.status}</span></h4>
+              <p><strong>Name:</strong> ${o.name}</p>
+              <p><strong>Phone:</strong> ${o.phone}</p>
+              <p><strong>Address:</strong> ${o.address}</p>
+              <hr>
+              <p><strong>Items:</strong><br> ${o.items.map(i => `${i.name} (x1)`).join('<br>')}</p>
+              <p><strong>Total:</strong> ₹${o.total}</p>
+              <p><small>${new Date(o.createdAt).toLocaleString()}</small></p>
+            </div>
+          `).join('');
+        }
+
+        const bookingsContainer = document.getElementById('bookings-container');
+        if (bookings.length === 0) {
+          bookingsContainer.innerHTML = '<p>No bookings yet.</p>';
+        } else {
+          bookingsContainer.innerHTML = bookings.reverse().map(b => `
+            <div class="item">
+              <h4>Booking #${b.id.slice(-6)} - <span class="status">${b.status}</span></h4>
+              <p><strong>Name:</strong> ${b.name || (b.firstName + ' ' + b.lastName)}</p>
+              <p><strong>Phone:</strong> ${b.phone || 'N/A'}</p>
+              <p><strong>Date & Time:</strong> ${b.date} at ${b.time || 'N/A'}</p>
+              <p><strong>Guests:</strong> ${b.guests}</p>
+              <p><strong>Requests:</strong> ${b.requests || 'None'}</p>
+              <p><small>${new Date(b.createdAt).toLocaleString()}</small></p>
+            </div>
+          `).join('');
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    loadData();
+    setInterval(loadData, 10000); // refresh every 10s
+  </script>
+</body>
+</html>

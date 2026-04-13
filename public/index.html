@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>গাঁও bala Café & Restaurant</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel:wght@400;600;700&family=Inter:wght@300;400&family=Galada&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+  <!-- LOADER -->
+  <div id="loader">
+    <div class="loader-logo"><span class="curvy-name">গাঁও bala</span></div>
+    <div class="loader-bar"></div>
+    <div class="loader-pct" id="loader-pct">0%</div>
+  </div>
+
+  <!-- CURSOR -->
+  <div id="cursor"></div>
+  <div id="cursor-ring"></div>
+
+  <!-- NAV -->
+  <nav id="nav">
+    <a href="#hero" class="nav-logo"><span class="curvy-name" style="font-size: 1.4em; transform: translateY(4px);">গাঁও bala</span><span style="font-family: 'Cinzel', serif;">Café & Restaurant</span></a>
+    <ul class="nav-links">
+      <li><a href="#about">Our Story</a></li>
+      <li><a href="#menu">Menu</a></li>
+      <li><a href="#specialties">Specials</a></li>
+      <li><a href="#contact">Reserve</a></li>
+      <li><a href="#map-section">Find Us</a></li>
+      <li><a href="#" onclick="toggleCart(); return false;" class="cart-nav-link">Cart <span id="cart-badge">(0)</span></a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-bg"></div>
+    <canvas id="three-canvas"></canvas>
+    <div class="hero-content" id="hero-content">
+      <p class="hero-eyebrow" id="h-eyebrow">West Bengal, India · Est. 2020</p>
+      <h1 class="hero-title" id="h-title">
+        <span class="curvy-name" style="font-size: 1.2em; text-transform: lowercase;">গাঁও bala</span>
+        <span class="bengali">Taste of the Village</span>
+      </h1>
+      <p class="hero-sub" id="h-sub">Where ancient Indian flavours meet modern luxury. Every dish tells the story of
+        Bengal.</p>
+      <div class="hero-cta" id="h-cta">
+        <a href="#menu" class="btn-gold"><span>Explore Menu</span></a>
+        <a href="#contact" class="btn-outline">Reserve a Table</a>
+      </div>
+    </div>
+    <div class="hero-scroll" id="h-scroll">
+      <span>Scroll to Discover</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section>
+    <div id="about">
+      <div class="about-visual reveal">
+        <div class="about-img-frame">
+          <img src="images/gaoewala.jpg" alt="গাঁও bala Cafe Interior"
+            style="width:100%; height:100%; object-fit:cover; filter: contrast(1.15) brightness(0.9) saturate(1.2) sepia(15%); transition: transform 0.5s ease;"
+            onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+        </div>
+        <div class="about-badge">
+          <span class="year">2020</span>
+          <span class="since">Since</span>
+        </div>
+      </div>
+      <div class="about-text">
+        <div class="section-label reveal">Our Story</div>
+        <h2 class="section-heading reveal reveal-delay-1">A Village Soul<br>in Every Bite</h2>
+        <div class="gold-line reveal reveal-delay-2"></div>
+        <p class="reveal reveal-delay-2"><span class="curvy-name">গাঁও bala</span> — meaning "of the village" — was born from a deep love of Bengal's
+          rustic culinary traditions. Nestled in West Bengal, we bring the warmth of a village hearth to every plate we
+          serve.</p>
+        <p class="reveal reveal-delay-3">From slow-cooked curries perfected over generations to freshly brewed masala
+          chai, every dish is a journey through the heartlands of India. We believe food is not just nourishment — it is
+          memory, it is culture, it is home.</p>
+        <div class="about-stats reveal">
+          <div>
+            <div class="stat-num">50+</div>
+            <div class="stat-label">Menu Items</div>
+          </div>
+          <div>
+            <div class="stat-num">∞</div>
+            <div class="stat-label">Recipes Perfected</div>
+          </div>
+          <div>
+            <div class="stat-num">100%</div>
+            <div class="stat-label">Local Ingredients</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="ornament-divider"><span>✦</span></div>
+
+  <!-- MENU -->
+  <section id="menu">
+    <div class="menu-header">
+      <div class="section-label reveal">Gallery Menu</div>
+      <h2 class="section-heading reveal reveal-delay-1">Curated Flavours</h2>
+      <p style="color:var(--text-dim);font-size:1.1rem;line-height:1.9;max-width:600px;margin-top:1rem;"
+        class="reveal reveal-delay-2">Each dish crafted with seasonal ingredients and ancestral wisdom. Hover to
+        discover.</p>
+      <div class="menu-tabs reveal reveal-delay-3">
+        <button class="menu-tab active" data-cat="all">All</button>
+        <button class="menu-tab" data-cat="biryani">Biryani</button>
+        <button class="menu-tab" data-cat="pizza">Pizza</button>
+        <button class="menu-tab" data-cat="starters">Starters & Snacks</button>
+        <button class="menu-tab" data-cat="noodles">Noodles & Pasta</button>
+        <button class="menu-tab" data-cat="fast">Fast Food</button>
+        <button class="menu-tab" data-cat="main">Main Course</button>
+        <button class="menu-tab" data-cat="beverages">Beverages</button>
+        <button class="menu-tab" data-cat="specials">Specials</button>
+      </div>
+    </div>
+    <div class="menu-grid reveal" id="menu-grid">
+      <!-- Dynamically Populated by script.js via Unsplash API -->
+      <div style="color:var(--text-dim); text-align:center; padding: 4rem; grid-column:1/-1; font-size:1.2rem;">Loading
+        dynamic menu from Unsplash...</div>
+    </div>
+  </section>
+
+  <!-- SPECIALTIES -->
+  <section id="specialties">
+    <div class="section-label reveal">Chef's Recommendations</div>
+    <h2 class="section-heading reveal reveal-delay-1">House Specialties</h2>
+    <div class="spec-grid">
+      <div class="spec-card reveal">
+        <span class="spec-icon">🫕</span>
+        <div class="spec-name">Village Thali</div>
+        <div class="spec-desc">A curated feast of the season's finest — rice, dal, sabzi, curry, chutney, and dessert.
+        </div>
+      </div>
+      <div class="spec-card reveal reveal-delay-1">
+        <span class="spec-icon">🔥</span>
+        <div class="spec-name">Clay Pot Biryani</div>
+        <div class="spec-desc">Fragrant basmati, whole spices, slow-cooked in a sealed clay pot over charcoal.</div>
+      </div>
+      <div class="spec-card reveal reveal-delay-2">
+        <span class="spec-icon">🐟</span>
+        <div class="spec-name">Ilish Maach</div>
+        <div class="spec-desc">Mustard-marinated hilsa fish, steamed in banana leaf — Bengal's proudest delicacy.</div>
+      </div>
+      <div class="spec-card reveal reveal-delay-3">
+        <span class="spec-icon">🫖</span>
+        <div class="spec-name">Heritage Chai Bar</div>
+        <div class="spec-desc">Eight varieties of hand-blended chai, served in earthen cups with seasonal
+          accompaniments.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXPERIENCE -->
+  <section id="experience">
+    <div class="exp-inner">
+      <div class="exp-quote reveal">"Food is the thread that binds us to our land, our people, and our memories. At
+        <span class="curvy-name">গাঁও bala</span>, we weave that thread with love."</div>
+      <div class="exp-features">
+        <div class="exp-feat reveal">
+          <div class="exp-feat-icon">🌿</div>
+          <div>
+            <div class="exp-feat-title">Farm to Table</div>
+            <div class="exp-feat-text">All produce sourced from local West Bengal farmers, ensuring peak freshness and
+              supporting our community.</div>
+          </div>
+        </div>
+        <div class="exp-feat reveal reveal-delay-1">
+          <div class="exp-feat-icon">👨‍🍳</div>
+          <div>
+            <div class="exp-feat-title">Artisan Chefs</div>
+            <div class="exp-feat-text">Our chefs trained in classical Bengali and North Indian cuisines, preserving
+              recipes passed down through generations.</div>
+          </div>
+        </div>
+        <div class="exp-feat reveal reveal-delay-2">
+          <div class="exp-feat-icon">🌙</div>
+          <div>
+            <div class="exp-feat-title">Evening Ambience</div>
+            <div class="exp-feat-text">Live folk music on weekends. Candlelit tables. The perfect atmosphere for
+              meaningful gatherings.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="ornament-divider"><span>✦</span></div>
+
+  <!-- REVIEWS -->
+  <section id="reviews">
+    <div style="max-width: 1400px; margin: 0 auto; padding: 5rem 4rem;">
+      <div class="section-label reveal">Guest Experiences</div>
+      <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 4rem;" class="reveal">
+        <h2 class="section-heading">Real Words<br>From You</h2>
+        <button class="btn-gold" style="cursor: pointer;" onclick="openReviewModal()"><span>Leave a Review</span></button>
+      </div>
+
+      <div class="reviews-grid">
+        <!-- Review 1 -->
+        <div class="review-card reveal">
+          <div class="review-header">
+            <div class="reviewer-info">
+              <div class="reviewer-avatar">S</div>
+              <div>
+                <div class="reviewer-name">Sneha D.</div>
+                <div class="review-stars">★★★★★</div>
+              </div>
+            </div>
+            <div class="review-source" style="display:flex; align-items:center; justify-content:center; width:24px; height:24px; border-radius:50%; background:#fff; padding:3px;"><img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google" style="width:100%; height:100%;"></div>
+          </div>
+          <p class="review-text">"Authentic village experience! The ambiance is amazing, and the clay pot biryani is a must-try. The traditional aesthetics combined with delicious food makes it my favorite spot. 10/10."</p>
+          <div class="review-media">
+            <img src="https://images.unsplash.com/photo-1631515243349-e0cb75fb8d3a?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Review Image" class="review-img">
+          </div>
+        </div>
+        
+        <!-- Review 2 -->
+        <div class="review-card reveal reveal-delay-1">
+          <div class="review-header">
+            <div class="reviewer-info">
+              <div class="reviewer-avatar">R</div>
+              <div>
+                <div class="reviewer-name">Rohan G.</div>
+                <div class="review-stars">★★★★★</div>
+              </div>
+            </div>
+            <div class="review-source" style="display:flex; align-items:center; justify-content:center; width:24px; height:24px; border-radius:50%; background:#fff; padding:3px;"><img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google" style="width:100%; height:100%;"></div>
+          </div>
+          <p class="review-text">"Beautiful decor and very polite staff. Had the Ilish Maach, it felt exactly like homemade. The rustic elements in the architecture are just stunning. A pure delight for families."</p>
+        </div>
+
+        <!-- Review 3 -->
+        <div class="review-card reveal reveal-delay-2">
+          <div class="review-header">
+            <div class="reviewer-info">
+              <div class="reviewer-avatar">P</div>
+              <div>
+                <div class="reviewer-name">Priya M.</div>
+                <div class="review-stars">★★★★☆</div>
+              </div>
+            </div>
+            <div class="review-source" style="display:flex; align-items:center; justify-content:center; width:24px; height:24px; border-radius:50%; background:#fff; padding:3px;"><img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google" style="width:100%; height:100%;"></div>
+          </div>
+          <p class="review-text">"Amazing food and unique concept. Love the traditional Touch in every little detail. Highly recommend the heritage chai bar! Great service, spectacular environment. Will definitely return."</p>
+          <div class="review-media">
+            <img src="https://images.unsplash.com/photo-1541167760496-1628856ab772?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Review Image" class="review-img">
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="ornament-divider"><span>✦</span></div>
+
+  <!-- CONTACT -->
+  <section>
+    <div id="contact">
+      <div class="contact-info">
+        <div class="section-label reveal">Get in Touch</div>
+        <h2 class="section-heading reveal reveal-delay-1">Reserve<br>Your Table</h2>
+        <div class="gold-line reveal reveal-delay-2"></div>
+        <p class="reveal reveal-delay-2">Book your experience at <span class="curvy-name">গাঁও bala</span> and let us take care of the rest. We welcome
+          families, celebrations, and quiet evenings alike.</p>
+        <div class="contact-detail reveal reveal-delay-2">
+          <div class="contact-detail-icon">📍</div>
+          <div>
+            <div class="contact-detail-label">Location</div>
+            <div class="contact-detail-value">West Bengal, India</div>
+          </div>
+        </div>
+        <div class="contact-detail reveal reveal-delay-3">
+          <div class="contact-detail-icon">🕐</div>
+          <div>
+            <div class="contact-detail-label">Hours</div>
+            <div class="contact-detail-value">Daily · 8:00 AM – 11:00 PM</div>
+          </div>
+        </div>
+        <div class="contact-detail reveal reveal-delay-3">
+          <div class="contact-detail-icon">📞</div>
+          <div>
+            <div class="contact-detail-label">Reservations & Enquiries</div>
+            <div class="contact-detail-value">083710 62930</div>
+          </div>
+        </div>
+        <div class="contact-detail reveal reveal-delay-3">
+          <div class="contact-detail-icon">✉️</div>
+          <div>
+            <div class="contact-detail-label">Email</div>
+            <div class="contact-detail-value">mayursamanta01@gmail.com</div>
+          </div>
+        </div>
+        <div class="contact-detail reveal reveal-delay-3">
+          <div class="contact-detail-icon">💬</div>
+          <div>
+            <div class="contact-detail-label">Messenger</div>
+            <div class="contact-detail-value">গাঁওবালা Cafe</div>
+          </div>
+        </div>
+      </div>
+      <form class="contact-form reveal" onsubmit="handleReserveForm(event)" id="reserve-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" id="res-name" placeholder="Arjun Roy" required>
+          </div>
+          <div class="form-group">
+            <label>Phone Number</label>
+            <input type="tel" id="res-phone" placeholder="+91 98765 43210" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Date</label>
+            <input type="date" id="res-date" required>
+          </div>
+          <div class="form-group">
+            <label>Time Slot</label>
+            <select id="res-time" style="width: 100%; background: var(--surface2); border: 1px solid rgba(201, 168, 76, 0.2); color: var(--text); font-family: 'Cormorant Garamond', serif; font-size: 1rem; padding: 1rem 1.25rem; transition: border-color 0.3s, background 0.3s; outline: none; appearance: none;">
+              <option value="12:00 PM">12:00 PM (Lunch)</option>
+              <option value="1:00 PM">1:00 PM (Lunch)</option>
+              <option value="2:00 PM">2:00 PM (Lunch)</option>
+              <option value="7:00 PM">7:00 PM (Dinner)</option>
+              <option value="8:00 PM">8:00 PM (Dinner)</option>
+              <option value="9:00 PM">9:00 PM (Dinner)</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Guests</label>
+            <input type="number" id="res-guests" placeholder="2" min="1" max="20" required>
+          </div>
+          <div class="form-group">
+            <label>Pre-order Dishes (Optional)</label>
+            <input type="text" id="res-preorder" placeholder="E.g. Clay Pot Biryani, Ilish Maach...">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Special Requests</label>
+          <textarea id="res-requests" placeholder="Dietary requirements, celebrations, seating preferences..."></textarea>
+        </div>
+        <button type="submit" class="btn-gold" id="res-submit-btn" style="cursor:pointer;width:100%;padding:1.2rem;font-size:0.9rem;border: 1px solid var(--gold); margin-top: 1rem;">
+          <span>Confirm Reservation</span>
+        </button>
+      </form>
+    </div>
+  </section>
+
+  <!-- MAP -->
+  <section id="map-section" style="padding-top: 5rem;">
+    <div style="max-width: 1400px; margin: 0 auto; padding: 0 4rem 2rem;">
+      <div class="section-label reveal">Location</div>
+      <h2 class="section-heading reveal reveal-delay-1">Find Us</h2>
+    </div>
+    <div style="position:relative; width: 100%; height: 600px;">
+    <iframe
+      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3690.41!2d87.7199771!3d22.570598!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a02a70019c11181%3A0x3f27536aee9c9fbc!2sGauwala%20CAFE%20%26%20Restaurant!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
+      allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+    </iframe>
+    </div>
+    <div class="map-pin-overlay">
+      <div class="map-pin-card">
+        <div class="pin-name"><span class="curvy-name">গাঁও bala</span> Café & Restaurant</div>
+        <div class="pin-addr">West Bengal, India</div>
+        <a href="https://www.google.com/maps/place/Gauwala+CAFE+%26+Restaurant/@22.570598,87.7199771,17z"
+          target="_blank" class="pin-cta">Open in Google Maps →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">
+      <span class="curvy-name" style="font-size: 1.4em; transform: translateY(4px);">গাঁও bala</span>
+      <small style="font-family: 'Inter', sans-serif;">Café & Restaurant</small>
+    </div>
+    <ul class="footer-links">
+      <li><a href="#about">Story</a></li>
+      <li><a href="#menu">Menu</a></li>
+      <li><a href="#specialties">Specials</a></li>
+      <li><a href="#contact">Reserve</a></li>
+    </ul>
+    <div class="footer-copy">© 2025 <span class="curvy-name">গাঁও bala</span> · West Bengal, India</div>
+  </footer>
+
+  <!-- MODAL -->
+  <div id="item-modal" class="modal-overlay">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeModal()">✕</button>
+      <div class="modal-img-container">
+        <img id="modal-img" src="" alt="Menu Item">
+      </div>
+      <div class="modal-info">
+        <h3 id="modal-name">Item Name</h3>
+        <p id="modal-price" class="gold-text">₹ 0</p>
+        <button class="btn-gold" style="margin-top: 1.5rem; border: none; cursor: pointer; padding: 1rem 2rem; width: 100%;" onclick="addToCartFromModal()">
+          <span>Add to Order</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CART SIDEBAR -->
+  <div id="cart-sidebar" class="cart-sidebar">
+    <div class="cart-header">
+      <h3>Your Order</h3>
+      <button class="cart-close" onclick="toggleCart()">✕</button>
+    </div>
+    <div class="cart-items" id="cart-items">
+      <!-- Cart items appended here -->
+    </div>
+    <div class="cart-footer">
+      <div class="cart-total">
+        <span>Total</span>
+        <span id="cart-total-price">₹ 0</span>
+      </div>
+      <form id="checkout-form" class="checkout-form" onsubmit="handleCheckout(event)">
+        <input type="text" id="checkout-name" placeholder="Name" required>
+        <input type="tel" id="checkout-phone" placeholder="Phone Number" required>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.2rem;">
+          <span style="font-size: 0.75rem; color: var(--gold-dim); font-family: 'Inter', sans-serif; letter-spacing: 0.1em; text-transform: uppercase;">Delivery Address</span>
+          <button type="button" onclick="fetchLocation()" style="background: rgba(201,168,76,0.1); border: 1px solid var(--gold); color: var(--gold); padding: 0.3rem 0.6rem; border-radius: 4px; font-size: 0.7rem; cursor: pointer; transition: all 0.3s; font-family: 'Inter', sans-serif;" onmouseover="this.style.background='var(--gold)'; this.style.color='var(--black)';" onmouseout="this.style.background='rgba(201,168,76,0.1)'; this.style.color='var(--gold)';">
+            📍 Use Current Location
+          </button>
+        </div>
+        <textarea id="checkout-address" placeholder="Enter your full address here..." required></textarea>
+        <button type="submit" class="btn-gold" id="checkout-btn" style="border: none; cursor: pointer; width: 100%; padding: 1rem; margin-top: 1rem;">
+          <span>Place Order (COD)</span>
+        </button>
+      </form>
+    </div>
+  </div>
+  <div id="cart-overlay" class="cart-overlay" onclick="toggleCart()"></div>
+
+  <!-- AI CHATBOT -->
+  <button class="chat-fab" onclick="toggleChat()">✨ Ask AI</button>
+  <div class="chat-window" id="chat-window">
+    <div class="chat-header">
+      <h4><span class="curvy-name" style="font-size: 1.5em; vertical-align: middle;">গাঁও bala</span> AI</h4>
+      <button onclick="toggleChat()">✕</button>
+    </div>
+    <div class="chat-body" id="chat-body">
+      <div class="chat-msg ai-msg">Hello! Tell me your budget (e.g. 'under 300'), and I will pick the perfect combination for you! ✦</div>
+    </div>
+    <div class="chat-input-area">
+      <input type="text" id="chat-input" placeholder="E.g. I have ₹400 for dinner..." onkeypress="if(event.key === 'Enter') sendChat()">
+      <button onclick="sendChat()">Send</button>
+    </div>
+  </div>
+
+  <!-- REVIEW MODAL -->
+  <div id="review-modal" class="modal-overlay">
+    <div class="modal-content" style="max-width: 500px; padding: 2.5rem; background: var(--surface); border: 1px solid rgba(201, 168, 76, 0.2);">
+      <button class="modal-close" onclick="closeReviewModal()">✕</button>
+      <div style="text-align:center; margin-bottom: 2rem;">
+        <h3 class="section-heading" style="font-size:2rem;">Leave a Review</h3>
+        <p style="color:var(--text-dim); margin-top:0.5rem; font-family: 'Inter', sans-serif;">Share your experience with us.</p>
+      </div>
+      <form onsubmit="submitReview(event)" style="display:flex; flex-direction:column; gap:1.5rem;">
+        <div class="form-group">
+          <label style="color: var(--text-dim); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem; display: block;">Your Name</label>
+          <input type="text" id="rev-name" placeholder="John Doe" required style="width:100%; padding:1rem; background:var(--surface2); border:1px solid rgba(201,168,76,0.2); color:var(--text); font-family: 'Cormorant Garamond', serif; font-size:1.1rem;">
+        </div>
+        <div class="form-group">
+          <label style="color: var(--text-dim); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem; display: block;">Rating</label>
+          <div style="display:flex; gap:0.5rem; color:var(--gold); font-size:1.8rem; cursor:pointer;" id="rev-stars">
+            <span onclick="setRating(1)">★</span>
+            <span onclick="setRating(2)">★</span>
+            <span onclick="setRating(3)">★</span>
+            <span onclick="setRating(4)">★</span>
+            <span onclick="setRating(5)">★</span>
+          </div>
+          <input type="hidden" id="rev-rating" value="5">
+        </div>
+        <div class="form-group">
+          <label style="color: var(--text-dim); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem; display: block;">Review</label>
+          <textarea id="rev-text" placeholder="Tell us about your visit..." required style="width:100%; padding:1rem; background:var(--surface2); border:1px solid rgba(201,168,76,0.2); color:var(--text); min-height:120px; resize:vertical; font-family:'Inter',sans-serif;"></textarea>
+        </div>
+        <div class="form-group">
+          <label style="color: var(--text-dim); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem; display: block;">Attach Photo/Video (Optional)</label>
+          <input type="file" id="rev-media" accept="image/*,video/*" style="width:100%; padding:1rem; background:var(--surface2); border:1px dashed rgba(201,168,76,0.4); color:var(--text-dim); font-family: 'Inter', sans-serif;">
+        </div>
+        <button type="submit" class="btn-gold" style="width:100%; padding:1.2rem; border:none; cursor:pointer; margin-top: 1rem;"><span>Submit Review</span></button>
+      </form>
+    </div>
+  </div>
+
+  <!-- THREE.JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <script src="js/script.js"></script>
+</body>
+
+</html>

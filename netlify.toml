@@ -1,0 +1,11 @@
+[build]
+  publish = "public"
+  functions = "netlify/functions"
+
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/api?action=:splat"
+  status = 200
+
+[functions]
+  node_bundler = "esbuild"
