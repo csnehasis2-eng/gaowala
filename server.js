@@ -22,6 +22,17 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Mirror Netlify routing locally
+app.all('/.netlify/functions/api', (req, res) => {
+  const action = req.query.action;
+  if (action) {
+    req.url = `/api/${action}`;
+    app.handle(req, res);
+  } else {
+    res.status(404).json({ error: 'Endpoint not found' });
+  }
+});
+
 const dataFile = path.join(__dirname, 'data', 'reservations.json');
 const ordersFile = path.join(__dirname, 'data', 'orders.json');
 

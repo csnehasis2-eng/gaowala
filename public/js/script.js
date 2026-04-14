@@ -249,7 +249,7 @@ async function handleReserveForm(e) {
 
   try {
     btn.innerHTML = '<span>Processing...</span>';
-    const res = await fetch('/api/reserve', {
+    const res = await fetch('/.netlify/functions/api?action=reserve', {
       method: 'POST',
       cache: 'no-store',
       headers: { 'Content-Type': 'application/json' },
@@ -296,7 +296,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   grid.innerHTML = '<div style="color:var(--text-dim); text-align:center; padding: 4rem; grid-column:1/-1; font-size:1.2rem;">Loading dynamic menu from Unsplash...</div>';
 
   try {
-    const res = await fetch('/api/menu', { cache: 'no-store' });
+    const res = await fetch('/.netlify/functions/api?action=menu', { cache: 'no-store' });
     const items = await res.json();
     grid.innerHTML = '';
 
@@ -441,7 +441,7 @@ async function handleCheckout(e) {
 
   try {
     btn.innerHTML = '<span>Processing...</span>';
-    const res = await fetch('/api/orders', {
+    const res = await fetch('/.netlify/functions/api?action=orders', {
       method: 'POST',
       cache: 'no-store',
       headers: { 'Content-Type': 'application/json' },
@@ -552,7 +552,7 @@ async function sendChat() {
   chatBody.scrollTop = chatBody.scrollHeight;
 
   try {
-    const res = await fetch('/api/chat', {
+    const res = await fetch('/.netlify/functions/api?action=chat', {
       method: 'POST',
       cache: 'no-store',
       headers: { 'Content-Type': 'application/json' },
