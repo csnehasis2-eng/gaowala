@@ -1,33 +1,69 @@
+// ── MOBILE DETECT (must be FIRST) ──
+const isMobile = window.innerWidth <= 900 || ('ontouchstart' in window);
+
 // ── LOADER ──
 const loader = document.getElementById('loader');
 const pct = document.getElementById('loader-pct');
 let p = 0;
-const iv = setInterval(() => {
-  p += Math.random() * 15;
-  if (p >= 100) { p = 100; clearInterval(iv); setTimeout(() => { loader.classList.add('hidden'); initHeroAnim(); }, 300); }
-  pct.textContent = Math.floor(p) + '%';
-}, 80);
+if (isMobile) {
+  // Instant load on mobile - don't waste time
+  loader.classList.add('hidden');
+  document.addEventListener('DOMContentLoaded', () => initHeroAnim());
+} else {
+  const iv = setInterval(() => {
+    p += Math.random() * 15;
+    if (p >= 100) { p = 100; clearInterval(iv); setTimeout(() => { loader.classList.add('hidden'); initHeroAnim(); }, 300); }
+    if (pct) pct.textContent = Math.floor(p) + '%';
+  }, 80);
+}
 
-// ── CURSOR ──
+// ── CURSOR (desktop only) ──
 const cur = document.getElementById('cursor');
 const ring = document.getElementById('cursor-ring');
-let mx = 0, my = 0, rx = 0, ry = 0;
-window.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; cur.style.left = mx + 'px'; cur.style.top = my + 'px'; });
-(function animCursor() {
-  rx += (mx - rx) * 0.1; ry += (my - ry) * 0.1;
-  ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
-  requestAnimationFrame(animCursor);
-})();
-document.querySelectorAll('a,button,.menu-item,.spec-card').forEach(el => {
-  el.addEventListener('mouseenter', () => { cur.style.transform = 'translate(-50%,-50%) scale(2.5)'; ring.style.transform = 'translate(-50%,-50%) scale(1.5)'; });
-  el.addEventListener('mouseleave', () => { cur.style.transform = 'translate(-50%,-50%) scale(1)'; ring.style.transform = 'translate(-50%,-50%) scale(1)'; });
-});
+if (isMobile) {
+  if (cur) cur.style.display = 'none';
+  if (ring) ring.style.display = 'none';
+  // Also restore default cursor on mobile
+  document.body.style.cursor = 'auto';
+} else {
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  window.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; cur.style.left = mx + 'px'; cur.style.top = my + 'px'; });
+  (function animCursor() {
+    rx += (mx - rx) * 0.1; ry += (my - ry) * 0.1;
+    ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+    requestAnimationFrame(animCursor);
+  })();
+  document.querySelectorAll('a,button,.menu-item,.spec-card').forEach(el => {
+    el.addEventListener('mouseenter', () => { cur.style.transform = 'translate(-50%,-50%) scale(2.5)'; ring.style.transform = 'translate(-50%,-50%) scale(1.5)'; });
+    el.addEventListener('mouseleave', () => { cur.style.transform = 'translate(-50%,-50%) scale(1)'; ring.style.transform = 'translate(-50%,-50%) scale(1)'; });
+  });
+}
 
-// ── NAV SCROLL ──
+// ── NAV SCROLL & MOBILE MENU ──
 window.addEventListener('scroll', () => { document.getElementById('nav').classList.toggle('scrolled', scrollY > 60); });
+
+function toggleMenu() {
+  document.getElementById('hamburger').classList.toggle('open');
+  document.getElementById('nav-links').classList.toggle('open');
+  document.getElementById('nav-overlay').classList.toggle('active');
+}
+
+function closeMenu() {
+  document.getElementById('hamburger').classList.remove('open');
+  document.getElementById('nav-links').classList.remove('open');
+  document.getElementById('nav-overlay').classList.remove('active');
+}
 
 // ── HERO ENTRY ──
 function initHeroAnim() {
+  if (isMobile) {
+    // Instant reveal on mobile - no delay needed
+    ['#h-eyebrow','#h-title','#h-sub','#h-cta','#h-scroll'].forEach(id => {
+      const el = document.querySelector(id);
+      if (el) { el.style.opacity = '1'; el.style.transform = 'none'; }
+    });
+    return;
+  }
   gsap.to('#h-eyebrow', { opacity: 1, y: 0, duration: 1, ease: 'power3.out' });
   gsap.to('#h-title', { opacity: 1, y: 0, duration: 1.2, delay: 0.2, ease: 'power3.out' });
   gsap.to('#h-sub', { opacity: 1, y: 0, duration: 1, delay: 0.5, ease: 'power3.out' });
@@ -39,81 +75,112 @@ function initHeroAnim() {
 (function () {
   const canvas = document.getElementById('three-canvas');
   if (!canvas) return;
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  // Skip entirely on mobile - biggest perf win
+  if (isMobile) { canvas.style.display = 'none'; return; }
+
+  // Mobile config: lower quality, fewer elements, slower rot
+  const mobileMode = isMobile;
+  const pixelRatio = mobileMode ? 1 : Math.min(window.devicePixelRatio, 2);
+  const particleCount = mobileMode ? 25 : 80;
+  const knotSegsTube = mobileMode ? 48 : 128;
+  const knotSegsRad  = mobileMode ? 10 : 24;
+  const rotSpeed     = mobileMode ? 0.001 : 0.003;
+  const floatAmp     = mobileMode ? 0.15 : 0.3;
+  const floatSpd     = mobileMode ? 0.4  : 0.7;
+
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: !mobileMode, alpha: true, powerPreference: 'low-power' });
+  renderer.setPixelRatio(pixelRatio);
   renderer.setSize(window.innerWidth, window.innerHeight);
 
   const scene = new THREE.Scene();
   const cam = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 100);
   cam.position.z = 5;
 
-  const ambLight = new THREE.AmbientLight(0xfff5d0, 0.4);
-  scene.add(ambLight);
-  const goldLight1 = new THREE.PointLight(0xc9a84c, 3, 15);
-  goldLight1.position.set(3, 2, 3); scene.add(goldLight1);
-  const goldLight2 = new THREE.PointLight(0xe8c97a, 2, 12);
-  goldLight2.position.set(-3, -1, 2); scene.add(goldLight2);
-  const rimLight = new THREE.DirectionalLight(0xffffff, 0.3);
+  // Lights: on mobile skip point lights (cheaper)
+  scene.add(new THREE.AmbientLight(0xfff5d0, mobileMode ? 0.8 : 0.4));
+  if (!mobileMode) {
+    const goldLight1 = new THREE.PointLight(0xc9a84c, 3, 15);
+    goldLight1.position.set(3, 2, 3); scene.add(goldLight1);
+    const goldLight2 = new THREE.PointLight(0xe8c97a, 2, 12);
+    goldLight2.position.set(-3, -1, 2); scene.add(goldLight2);
+  }
+  const rimLight = new THREE.DirectionalLight(0xffffff, mobileMode ? 0.6 : 0.3);
   rimLight.position.set(0, 5, -2); scene.add(rimLight);
 
-  const mat_curry = new THREE.MeshPhysicalMaterial({ color: 0xc9a84c, metalness: 0.3, roughness: 0.4, emissive: 0x6a4a10, emissiveIntensity: 0.2 });
-  const mat_plate = new THREE.MeshPhysicalMaterial({ color: 0xf0e8d0, metalness: 0.7, roughness: 0.2, emissive: 0x2a2010, emissiveIntensity: 0.1 });
-  const mat_gold = new THREE.MeshPhysicalMaterial({ color: 0xc9a84c, metalness: 0.9, roughness: 0.1, emissive: 0x4a3000, emissiveIntensity: 0.2 });
-
   const objects = [];
-
   const g1 = new THREE.Group();
-  const knotGeo = new THREE.TorusKnotGeometry(0.8, 0.25, 128, 24);
-  const knotMat = new THREE.MeshPhysicalMaterial({ 
-    color: 0xc9a84c, metalness: 1, roughness: 0.15,
-    clearcoat: 1.0, clearcoatRoughness: 0.1
-  });
-  const knot = new THREE.Mesh(knotGeo, knotMat);
-  const ringGeo = new THREE.TorusGeometry(1.4, 0.02, 16, 100);
-  const ring1 = new THREE.Mesh(ringGeo, knotMat);
-  ring1.rotation.x = Math.PI / 2;
-  const ring2 = new THREE.Mesh(ringGeo, knotMat);
-  ring2.rotation.y = Math.PI / 2;
-  g1.add(knot, ring1, ring2);
-  g1.position.set(-2, 0.5, -2);
-  scene.add(g1); objects.push({ g: g1, amp: 0.3, spd: 0.7, rot: 0.003 });
 
+  // Lower-poly knot on mobile
+  const knotMat = mobileMode
+    ? new THREE.MeshStandardMaterial({ color: 0xc9a84c, metalness: 0.8, roughness: 0.3 })
+    : new THREE.MeshPhysicalMaterial({ color: 0xc9a84c, metalness: 1, roughness: 0.15, clearcoat: 1.0, clearcoatRoughness: 0.1 });
+  const knotGeo = new THREE.TorusKnotGeometry(0.8, 0.25, knotSegsTube, knotSegsRad);
+  g1.add(new THREE.Mesh(knotGeo, knotMat));
+
+  // Rings: skip on mobile for perf
+  if (!mobileMode) {
+    const ringGeo = new THREE.TorusGeometry(1.4, 0.02, 16, 100);
+    const r1 = new THREE.Mesh(ringGeo, knotMat); r1.rotation.x = Math.PI / 2; g1.add(r1);
+    const r2 = new THREE.Mesh(ringGeo, knotMat); r2.rotation.y = Math.PI / 2; g1.add(r2);
+  }
+
+  g1.position.set(-2, 0.5, -2);
+  scene.add(g1);
+  objects.push({ g: g1, amp: floatAmp, spd: floatSpd, rot: rotSpeed });
+
+  // Particles
   const partGeo = new THREE.BufferGeometry();
-  const N = 80;
   const pos = [], col = [];
-  for (let i = 0; i < N; i++) {
+  for (let i = 0; i < particleCount; i++) {
     pos.push((Math.random() - 0.5) * 12, (Math.random() - 0.5) * 8, (Math.random() - 0.5) * 6 - 2);
     const b = 0.5 + Math.random() * 0.5;
     col.push(0.78 * b, 0.66 * b, 0.3 * b);
   }
   partGeo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
   partGeo.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
-  const partMat = new THREE.PointsMaterial({ size: 0.04, vertexColors: true, transparent: true, opacity: 0.7 });
+  const partMat = new THREE.PointsMaterial({ size: mobileMode ? 0.06 : 0.04, vertexColors: true, transparent: true, opacity: 0.7 });
   const particles = new THREE.Points(partGeo, partMat);
   scene.add(particles);
 
+  // Mouse tracking: desktop only
   let targX = 0, targY = 0, currX = 0, currY = 0;
-  window.addEventListener('mousemove', e => {
-    targX = (e.clientX / window.innerWidth - 0.5) * 0.6;
-    targY = -(e.clientY / window.innerHeight - 0.5) * 0.4;
-  });
+  if (!mobileMode) {
+    window.addEventListener('mousemove', e => {
+      targX = (e.clientX / window.innerWidth - 0.5) * 0.6;
+      targY = -(e.clientY / window.innerHeight - 0.5) * 0.4;
+    });
+  }
+
+  // Pause when canvas off-screen (saves battery on mobile)
+  let isVisible = true;
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(entries => { isVisible = entries[0].isIntersecting; }, { threshold: 0.05 }).observe(canvas);
+  }
 
   let t = 0;
-  function animate() {
+  let lastFrame = 0;
+  const targetFPS = mobileMode ? 30 : 60;
+  const frameDelta = 1000 / targetFPS;
+
+  function animate(now) {
     requestAnimationFrame(animate);
-    t += 0.016;
+    if (!isVisible) return; // pause when off-screen
+    if (now - lastFrame < frameDelta) return; // throttle to target FPS
+    lastFrame = now;
+
+    t += mobileMode ? 0.008 : 0.016;
     currX += (targX - currX) * 0.04;
     currY += (targY - currY) * 0.04;
-    scene.rotation.y = currX; scene.rotation.x = currY;
+    scene.rotation.y = currX;
+    scene.rotation.x = currY;
     objects.forEach(o => {
-      const ph = o.phase || 0;
-      o.g.position.y += Math.sin(t * o.spd + ph) * o.amp * 0.01;
+      o.g.position.y += Math.sin(t * o.spd) * o.amp * 0.01;
       o.g.rotation.y += o.rot;
     });
-    particles.rotation.y = t * 0.02;
+    particles.rotation.y = t * (mobileMode ? 0.008 : 0.02);
     renderer.render(scene, cam);
   }
-  animate();
+  requestAnimationFrame(animate);
 
   window.addEventListener('resize', () => {
     cam.aspect = window.innerWidth / window.innerHeight;
@@ -123,35 +190,51 @@ function initHeroAnim() {
 })();
 
 // ── GSAP SCROLL REVEAL ──
-if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
-  gsap.registerPlugin(ScrollTrigger);
-  document.querySelectorAll('.reveal').forEach(el => {
-    ScrollTrigger.create({
-      trigger: el,
-      start: 'top 88%',
-      onEnter: () => el.classList.add('visible'),
-      once: true
+document.addEventListener('DOMContentLoaded', () => {
+  if (isMobile) {
+    // On mobile make everything visible immediately - no scroll reveal lag
+    document.querySelectorAll('.reveal').forEach(el => el.classList.add('visible'));
+    return;
+  }
+  if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+    gsap.registerPlugin(ScrollTrigger);
+    document.querySelectorAll('.reveal').forEach(el => {
+      ScrollTrigger.create({
+        trigger: el,
+        start: 'top 88%',
+        onEnter: () => el.classList.add('visible'),
+        once: true
+      });
     });
+  }
+});
+window.addEventListener('load', () => {
+  if (typeof ScrollTrigger !== 'undefined') {
+    setTimeout(() => ScrollTrigger.refresh(), 500); // give time for nested iframes/images
+  }
+});
+
+// ── FLOATING PARTICLES DOM (desktop only) ──
+if (!isMobile) {
+  for (let i = 0; i < 18; i++) {
+    const pd = document.createElement('div');
+    pd.className = 'particle';
+    const sz = Math.random() * 3 + 1;
+    pd.style.cssText = `width:${sz}px;height:${sz}px;left:${Math.random() * 100}vw;animation-duration:${Math.random() * 20 + 15}s;animation-delay:${Math.random() * 15}s;opacity:${Math.random() * 0.4 + 0.1}`;
+    document.body.appendChild(pd);
+  }
+}
+
+// ── HERO PARALLAX (desktop only) ──
+if (!isMobile) {
+  window.addEventListener('scroll', () => {
+    const y = scrollY;
+    const hero = document.getElementById('hero-content');
+    if (hero) hero.style.transform = `translateY(${y * 0.3}px)`;
+    const canvas = document.getElementById('three-canvas');
+    if (canvas) canvas.style.transform = `translateY(${y * 0.15}px)`;
   });
 }
-
-// ── FLOATING PARTICLES DOM ──
-for (let i = 0; i < 18; i++) {
-  const p = document.createElement('div');
-  p.className = 'particle';
-  const sz = Math.random() * 3 + 1;
-  p.style.cssText = `width:${sz}px;height:${sz}px;left:${Math.random() * 100}vw;animation-duration:${Math.random() * 20 + 15}s;animation-delay:${Math.random() * 15}s;opacity:${Math.random() * 0.4 + 0.1}`;
-  document.body.appendChild(p);
-}
-
-// ── HERO PARALLAX ──
-window.addEventListener('scroll', () => {
-  const y = scrollY;
-  const hero = document.getElementById('hero-content');
-  if (hero) hero.style.transform = `translateY(${y * 0.3}px)`;
-  const canvas = document.getElementById('three-canvas');
-  if (canvas) canvas.style.transform = `translateY(${y * 0.15}px)`;
-});
 
 async function handleReserveForm(e) {
   e.preventDefault();
@@ -166,8 +249,9 @@ async function handleReserveForm(e) {
 
   try {
     btn.innerHTML = '<span>Processing...</span>';
-    const res = await fetch('/.netlify/functions/api?action=reserve', {
+    const res = await fetch('/api/reserve', {
       method: 'POST',
+      cache: 'no-store',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, phone, date, time, guests, requests })
     });
@@ -193,7 +277,7 @@ document.querySelectorAll('.menu-tab').forEach(tab => {
     document.querySelectorAll('.menu-tab').forEach(t => t.classList.remove('active'));
     this.classList.add('active');
     document.querySelectorAll('.menu-item').forEach(item => {
-      const show = cat === 'all' || item.dataset.cat === cat;
+      const show = item.dataset.cat === cat;
       if (show) {
         item.style.display = 'block';
         if (typeof gsap !== 'undefined') gsap.to(item, { opacity: 1, scale: 1, duration: 0.4 });
@@ -212,7 +296,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   grid.innerHTML = '<div style="color:var(--text-dim); text-align:center; padding: 4rem; grid-column:1/-1; font-size:1.2rem;">Loading dynamic menu from Unsplash...</div>';
 
   try {
-    const res = await fetch('/.netlify/functions/api?action=menu');
+    const res = await fetch('/api/menu', { cache: 'no-store' });
     const items = await res.json();
     grid.innerHTML = '';
 
@@ -222,6 +306,11 @@ document.addEventListener('DOMContentLoaded', async () => {
       div.className = 'menu-item menu-border reveal reveal-delay-' + (index % 3);
       div.dataset.cat = item.cat;
       div.onclick = () => openModal(item);
+      
+      // Hide non-biryani items by default since "All" is removed
+      if (item.cat !== 'biryani') {
+        div.style.display = 'none';
+      }
 
       div.innerHTML = `
         <img src="${item.image}" alt="${item.name}" loading="lazy" onerror="console.error('Failed to load image for ${item.name}: ' + this.src); this.onerror=null; this.src='https://images.unsplash.com/photo-1414235077428-338988692140?w=400&q=80';">
@@ -352,8 +441,9 @@ async function handleCheckout(e) {
 
   try {
     btn.innerHTML = '<span>Processing...</span>';
-    const res = await fetch('/.netlify/functions/api?action=orders', {
+    const res = await fetch('/api/orders', {
       method: 'POST',
+      cache: 'no-store',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, phone, address, items: cart, total })
     });
@@ -430,12 +520,18 @@ function fetchLocation() {
 // ── AI CHATBOT ──
 function toggleChat() {
   document.getElementById('chat-window').classList.toggle('active');
+  const overlay = document.getElementById('chat-overlay');
+  if (overlay) overlay.classList.toggle('active');
+  const fab = document.getElementById('chat-fab');
+  if (fab) fab.classList.toggle('chat-open');
 }
 
 async function sendChat() {
+  if (sendChat._busy) return; // debounce: block if already waiting for a reply
   const input = document.getElementById('chat-input');
   const msg = input.value.trim();
   if (!msg) return;
+  sendChat._busy = true;
 
   const chatBody = document.getElementById('chat-body');
   
@@ -456,8 +552,9 @@ async function sendChat() {
   chatBody.scrollTop = chatBody.scrollHeight;
 
   try {
-    const res = await fetch('/.netlify/functions/api?action=chat', {
+    const res = await fetch('/api/chat', {
       method: 'POST',
+      cache: 'no-store',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ message: msg })
     });
@@ -465,6 +562,8 @@ async function sendChat() {
     aiDiv.innerHTML = data.reply.replace(/\n/g, '<br>').replace(/\*(.*?)\*/g, '<b>$1</b>');
   } catch (err) {
     aiDiv.textContent = 'Oops! Something went wrong. Try again.';
+  } finally {
+    sendChat._busy = false; // release debounce
   }
   
   chatBody.scrollTop = chatBody.scrollHeight;

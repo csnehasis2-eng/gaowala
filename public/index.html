@@ -3,9 +3,11 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0">
+  <meta name="theme-color" content="#050505">
   <title>গাঁও bala Café & Restaurant</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
     href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel:wght@400;600;700&family=Inter:wght@300;400&family=Galada&display=swap"
     rel="stylesheet">
@@ -28,15 +30,19 @@
   <!-- NAV -->
   <nav id="nav">
     <a href="#hero" class="nav-logo"><span class="curvy-name" style="font-size: 1.4em; transform: translateY(4px);">গাঁও bala</span><span style="font-family: 'Cinzel', serif;">Café & Restaurant</span></a>
-    <ul class="nav-links">
-      <li><a href="#about">Our Story</a></li>
-      <li><a href="#menu">Menu</a></li>
-      <li><a href="#specialties">Specials</a></li>
-      <li><a href="#contact">Reserve</a></li>
-      <li><a href="#map-section">Find Us</a></li>
-      <li><a href="#" onclick="toggleCart(); return false;" class="cart-nav-link">Cart <span id="cart-badge">(0)</span></a></li>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="#about" onclick="closeMenu()">Our Story</a></li>
+      <li><a href="#menu" onclick="closeMenu()">Menu</a></li>
+      <li><a href="#specialties" onclick="closeMenu()">Specials</a></li>
+      <li><a href="#contact" onclick="closeMenu()">Reserve</a></li>
+      <li><a href="#map-section" onclick="closeMenu()">Find Us</a></li>
+      <li><a href="#" onclick="toggleCart(); closeMenu(); return false;" class="cart-nav-link">Cart <span id="cart-badge">(0)</span></a></li>
     </ul>
+    <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
   </nav>
+  <div class="nav-overlay" id="nav-overlay" onclick="closeMenu()"></div>
 
   <!-- HERO -->
   <section id="hero">
@@ -114,8 +120,7 @@
         class="reveal reveal-delay-2">Each dish crafted with seasonal ingredients and ancestral wisdom. Hover to
         discover.</p>
       <div class="menu-tabs reveal reveal-delay-3">
-        <button class="menu-tab active" data-cat="all">All</button>
-        <button class="menu-tab" data-cat="biryani">Biryani</button>
+        <button class="menu-tab active" data-cat="biryani">Biryani</button>
         <button class="menu-tab" data-cat="pizza">Pizza</button>
         <button class="menu-tab" data-cat="starters">Starters & Snacks</button>
         <button class="menu-tab" data-cat="noodles">Noodles & Pasta</button>
@@ -360,11 +365,11 @@
 
   <!-- MAP -->
   <section id="map-section" style="padding-top: 5rem;">
-    <div style="max-width: 1400px; margin: 0 auto; padding: 0 4rem 2rem;">
+    <div style="max-width: 1400px; margin: 0 auto; padding: 0 4rem 2rem;" class="map-header-block">
       <div class="section-label reveal">Location</div>
       <h2 class="section-heading reveal reveal-delay-1">Find Us</h2>
     </div>
-    <div style="position:relative; width: 100%; height: 600px;">
+    <div style="position:relative; width: 100%; height: clamp(300px, 50vw, 600px);">
     <iframe
       src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3690.41!2d87.7199771!3d22.570598!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a02a70019c11181%3A0x3f27536aee9c9fbc!2sGauwala%20CAFE%20%26%20Restaurant!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
       allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
@@ -445,11 +450,11 @@
   <div id="cart-overlay" class="cart-overlay" onclick="toggleCart()"></div>
 
   <!-- AI CHATBOT -->
-  <button class="chat-fab" onclick="toggleChat()">✨ Ask AI</button>
+  <button class="chat-fab" id="chat-fab" onclick="toggleChat()">✨ Ask AI</button>
   <div class="chat-window" id="chat-window">
     <div class="chat-header">
       <h4><span class="curvy-name" style="font-size: 1.5em; vertical-align: middle;">গাঁও bala</span> AI</h4>
-      <button onclick="toggleChat()">✕</button>
+      <button onclick="toggleChat()" aria-label="Close AI Chat">✕</button>
     </div>
     <div class="chat-body" id="chat-body">
       <div class="chat-msg ai-msg">Hello! Tell me your budget (e.g. 'under 300'), and I will pick the perfect combination for you! ✦</div>
@@ -459,6 +464,7 @@
       <button onclick="sendChat()">Send</button>
     </div>
   </div>
+  <div class="chat-overlay" id="chat-overlay" onclick="toggleChat()"></div>
 
   <!-- REVIEW MODAL -->
   <div id="review-modal" class="modal-overlay">
