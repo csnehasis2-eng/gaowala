@@ -344,13 +344,22 @@
         </div>
         <div class="form-row">
           <div class="form-group">
-            <label>Guests</label>
+            <label>Number of Guests</label>
             <input type="number" id="res-guests" placeholder="2" min="1" max="20" required>
           </div>
           <div class="form-group">
-            <label>Pre-order Dishes (Optional)</label>
-            <input type="text" id="res-preorder" placeholder="E.g. Clay Pot Biryani, Ilish Maach...">
+            <label>Seating Preference</label>
+            <select id="res-seating" style="width: 100%; background: var(--surface2); border: 1px solid rgba(201, 168, 76, 0.2); color: var(--text); font-family: 'Cormorant Garamond', serif; font-size: 1rem; padding: 1rem 1.25rem; transition: border-color 0.3s, background 0.3s; outline: none; appearance: none;">
+              <option value="Indoor Dining">Indoor Dining</option>
+              <option value="Courtyard / Window">Courtyard / Window</option>
+              <option value="Private Table">Private Table</option>
+              <option value="Outdoor Verandah">Outdoor Verandah</option>
+            </select>
           </div>
+        </div>
+        <div class="form-group">
+          <label>Pre-order Dishes (Optional)</label>
+          <input type="text" id="res-preorder" placeholder="E.g. Clay Pot Biryani, Ilish Maach...">
         </div>
         <div class="form-group">
           <label>Special Requests</label>

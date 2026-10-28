@@ -12,9 +12,12 @@ if (isMobile) {
 } else {
   const iv = setInterval(() => {
     p += Math.random() * 15;
-    if (p >= 100) { p = 100; clearInterval(iv); setTimeout(() => { loader.classList.add('hidden'); initHeroAnim(); }, 300); }
+    if (p >= 100) { p = 100; clearInterval(iv); setTimeout(() => { if (loader) loader.classList.add('hidden'); initHeroAnim(); }, 250); }
     if (pct) pct.textContent = Math.floor(p) + '%';
-  }, 80);
+  }, 60);
+  window.addEventListener('load', () => {
+    setTimeout(() => { if (loader && !loader.classList.contains('hidden')) { clearInterval(iv); loader.classList.add('hidden'); initHeroAnim(); } }, 1200);
+  });
 }
 
 // ── CURSOR (desktop fine-pointer only) ──
@@ -71,16 +74,32 @@ if (!hasFinePointer || isMobile || window.matchMedia('(prefers-reduced-motion: r
 window.addEventListener('scroll', () => { document.getElementById('nav').classList.toggle('scrolled', scrollY > 60); });
 
 function toggleMenu() {
-  document.getElementById('hamburger').classList.toggle('open');
-  document.getElementById('nav-links').classList.toggle('open');
-  document.getElementById('nav-overlay').classList.toggle('active');
+  const isOpen = document.getElementById('nav-links').classList.toggle('open');
+  document.getElementById('hamburger').classList.toggle('open', isOpen);
+  document.getElementById('nav-overlay').classList.toggle('active', isOpen);
+  if (isOpen) {
+    document.body.style.overflow = 'hidden';
+  } else {
+    document.body.style.overflow = '';
+  }
 }
 
 function closeMenu() {
   document.getElementById('hamburger').classList.remove('open');
   document.getElementById('nav-links').classList.remove('open');
   document.getElementById('nav-overlay').classList.remove('active');
+  document.body.style.overflow = '';
 }
+
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    closeMenu();
+    closeModal();
+    closeReviewModal();
+    if (document.getElementById('chat-window').classList.contains('active')) toggleChat();
+    if (document.getElementById('cart-sidebar').classList.contains('active')) toggleCart();
+  }
+});
 
 // ── HERO ENTRY ──
 function initHeroAnim() {
@@ -273,7 +292,12 @@ async function handleReserveForm(e) {
   const date = document.getElementById('res-date').value;
   const time = document.getElementById('res-time').value;
   const guests = document.getElementById('res-guests').value;
-  const requests = document.getElementById('res-requests').value;
+  const seating = document.getElementById('res-seating') ? document.getElementById('res-seating').value : '';
+  const preorder = document.getElementById('res-preorder') ? document.getElementById('res-preorder').value : '';
+  let requests = document.getElementById('res-requests').value;
+  if (seating || preorder) {
+    requests = [requests, seating ? ('Seating: ' + seating) : '', preorder ? ('Pre-order: ' + preorder) : ''].filter(Boolean).join(' | ');
+  }
 
   try {
     btn.innerHTML = '<span>Processing...</span>';
@@ -331,7 +355,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     items.forEach((item, index) => {
       const displayPrice = isNaN(item.price) ? `₹ ${item.price}` : `₹ ${item.price}`;
       const div = document.createElement('div');
-      div.className = 'menu-item menu-border reveal reveal-delay-' + (index % 3);
+      div.className = 'menu-item menu-border reveal' + (isMobile ? ' visible' : '') + ' reveal-delay-' + (index % 3);
       div.dataset.cat = item.cat;
       div.onclick = () => openModal(item);
       
